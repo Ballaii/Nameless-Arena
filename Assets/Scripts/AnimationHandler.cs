@@ -116,4 +116,10 @@ public class AnimationHandler : MonoBehaviour
         Debug.Log("FootR animation event triggered");
         // Play right footstep sound, spawn dust, etc.
     }
+
+    public void Land()
+    {
+        Debug.Log("Land animation event triggered");
+        // Play landing sound, spawn dust, etc.
+    }
 }

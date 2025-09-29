@@ -6,7 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     Transform cameraObject;
     InputHandler inputHandler;
-    Vector3 moveDirection;
+    public Vector3 moveDirection;
     Rigidbody playerRigidbody;
     PlayerManager playerManager;
 
@@ -16,6 +16,15 @@ public class PlayerMovement : MonoBehaviour
     public AnimationHandler animator;
     public new Rigidbody rigidbody;
     public new GameObject normalCamera;
+    [Header("Ground and Air Detection")]
+    [SerializeField]
+    float groundDetectionRayStartPoint = 0.5f;
+    [SerializeField]
+    float minimumDistanceNeededToBeginFall = 1f;
+    [SerializeField]
+    float groundDirectionRayDistance = 0.2f;
+    LayerMask ignoreForGroundCheck;
+    public float inAirTimer;
 
     [Header("Movement Stats")]
     [SerializeField]
@@ -26,6 +35,8 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField]
     public float rotationSpeed = 7;
+    [SerializeField]
+    public float fallingSpeed = 90f;
 
     void Start()
     {
@@ -37,6 +48,9 @@ public class PlayerMovement : MonoBehaviour
         cameraObject = Camera.main.transform;
         myTransform = transform;
         animator.Initialize();
+
+        playerManager.isGrounded = true;
+        ignoreForGroundCheck = ~(1 << 8 | 1 << 11);
     }
 
 
@@ -70,6 +84,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (inputHandler.rollFlag)
             return;
+        if (playerManager.isInteracting)
+            return;
 
         moveDirection = cameraObject.forward * inputHandler.vertical;
         moveDirection += cameraObject.right * inputHandler.horizontal;
@@ -77,7 +93,8 @@ public class PlayerMovement : MonoBehaviour
         moveDirection.y = 0;
 
         float speed = movementSpeed;
-        if(inputHandler.sprint)
+        
+        if (inputHandler.sprint && inputHandler.moveAmount > 0.5f)
         {
             speed = sprintSpeed;
             playerManager.isSprinting = true;
@@ -105,12 +122,12 @@ public class PlayerMovement : MonoBehaviour
         if (animator.animator.GetBool("isInteracting"))
             return;
 
-        if(inputHandler.rollFlag)
+        if (inputHandler.rollFlag)
         {
             moveDirection = cameraObject.forward * inputHandler.vertical;
             moveDirection += cameraObject.right * inputHandler.horizontal;
 
-            if(inputHandler.moveAmount > 0)
+            if (inputHandler.moveAmount > 0)
             {
                 animator.PlayTargetAnimation("Rolling", true);
                 moveDirection.y = 0;
@@ -122,6 +139,85 @@ public class PlayerMovement : MonoBehaviour
                 animator.PlayTargetAnimation("Backstep", true);
             }
             inputHandler.rollFlag = false;
+        }
+    }
+
+    public void HandleFalling(float delta, Vector3 moveDirection)
+    {
+        playerManager.isGrounded = false;
+        RaycastHit hit;
+        Vector3 origin = myTransform.position;
+        origin.y += groundDetectionRayStartPoint;
+
+        if (Physics.Raycast(origin, myTransform.forward, out hit, 0.4f))
+        {
+            moveDirection = Vector3.zero;
+        }
+        if (playerManager.isInAir)
+        {
+            rigidbody.AddForce(-Vector3.up * fallingSpeed);
+            rigidbody.AddForce(moveDirection * fallingSpeed / 5f);
+        }
+
+        Vector3 dir = moveDirection;
+        dir.Normalize();
+        origin = origin + dir * groundDirectionRayDistance;
+
+        targetPosition = myTransform.position;
+
+        Debug.DrawRay(origin, -Vector3.up * minimumDistanceNeededToBeginFall, Color.red, 0.1f, false);
+        if (Physics.Raycast(origin, -Vector3.up, out hit, minimumDistanceNeededToBeginFall, ignoreForGroundCheck))
+        {
+            normalVector = hit.normal;
+            Vector3 tp = hit.point;
+            playerManager.isGrounded = true;
+            targetPosition.y = tp.y;
+
+            if (playerManager.isInAir)
+            {
+                if (inAirTimer > 0.5f)
+                {
+                    Debug.Log("You were in the air for " + inAirTimer);
+                    animator.PlayTargetAnimation("Land", true);
+                    inAirTimer = 0;
+                }
+                else
+                {
+                    animator.PlayTargetAnimation("Movement", false);
+                    inAirTimer = 0;
+                }
+                playerManager.isInAir = false;
+            }
+        }
+        else
+        {
+            if (playerManager.isGrounded)
+            {
+                playerManager.isGrounded = false;
+            }
+            if (playerManager.isInAir == false)
+            {
+                if (playerManager.isInteracting == false)
+                {
+                    animator.PlayTargetAnimation("Falling", true);
+                }
+                Vector3 vel = rigidbody.velocity;
+                vel.Normalize();
+                rigidbody.velocity = vel * (movementSpeed / 2);
+                playerManager.isInAir = true;
+            }
+        }
+        if (playerManager.isGrounded)
+        {
+            if (playerManager.isInteracting || inputHandler.moveAmount > 0)
+            {
+                myTransform.position = Vector3.Lerp(myTransform.position,
+                                                    targetPosition, Time.deltaTime);
+            }
+            else
+            {
+                myTransform.position = targetPosition;
+            }
         }
     }
     #endregion
