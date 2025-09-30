@@ -1,6 +1,6 @@
 # Current progress of the game
 
-https://github.com/user-attachments/assets/ac93e5bc-e164-4f14-8555-bfc2700bc923
+*video location*
 
 # What's my vision
 - I want to achieve semi-accurate souls-like gameplay
