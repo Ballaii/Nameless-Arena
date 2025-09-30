@@ -122,4 +122,13 @@ public class AnimationHandler : MonoBehaviour
         Debug.Log("Land animation event triggered");
         // Play landing sound, spawn dust, etc.
     }
+
+    public void EnableCombo()
+    {
+        animator.SetBool("canDoCombo", true);
+    }
+    public void DisableCombo()
+    {
+        animator.SetBool("canDoCombo", false);
+    }
 }

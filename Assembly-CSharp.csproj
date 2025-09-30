@@ -42,13 +42,20 @@
      <Compile Include="Assets\Scripts\WeaponSlotManager.cs" />
      <Compile Include="Assets\Scripts\CameraHandler.cs" />
      <Compile Include="Assets\Scripts\PlayerMovement.cs" />
+     <Compile Include="Assets\Scripts\PlayerAttacker.cs" />
      <Compile Include="Assets\Scripts\AnimationHandler.cs" />
      <Compile Include="Assets\Scripts\Inventory.cs" />
      <Compile Include="Assets\Scripts\WeaponItem.cs" />
+     <Compile Include="Assets\Scripts\ResetAnimatorBool.cs" />
      <Compile Include="Assets\Scripts\Item.cs" />
      <Compile Include="Assets\Scripts\InputHandler.cs" />
-     <Compile Include="Assets\Scripts\ResetAnimatorBool.cs" />
-     <Compile Include="Assets\Scripts\PlayerAttacker.cs" />
+     <Compile Include="Assets\Scripts\HealthBar.cs" />
+     <Compile Include="Assets\Scripts\PlayerStats.cs" />
+     <Compile Include="Assets\Scripts\DamagePlayer.cs" />
+     <Compile Include="Assets\Scripts\DamageCollider.cs" />
+     <Compile Include="Assets\Scripts\EnemyStats.cs" />
+     <Compile Include="Assets\UnityAssetStore\Kevin Iglesias\Human Animations\Scripts\SpineProxy.cs" />
+     <None Include="Assets\UnityAssetStore\Unboring Studios\3D LOW POLY Skeletons - FREE\ReadMe.txt" />
     <Reference Include="UnityEngine">
         <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.23f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>

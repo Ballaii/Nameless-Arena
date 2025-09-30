@@ -14,6 +14,7 @@ public class PlayerManager : MonoBehaviour
     public bool isSprinting;
     public bool isInAir;
     public bool isGrounded;
+    public bool canDoCombo;
 
 
     private void Awake()
@@ -22,7 +23,7 @@ public class PlayerManager : MonoBehaviour
 
     void Start()
     {
-        cameraHandler = CameraHandler.singleton;
+        cameraHandler = FindObjectOfType<CameraHandler>();
 
         playerManager = GetComponent<PlayerManager>();
         inputHandler = GetComponent<InputHandler>();
@@ -34,7 +35,7 @@ public class PlayerManager : MonoBehaviour
     {
         float delta = Time.deltaTime;
         isInteracting = animator.GetBool("isInteracting");
-
+        canDoCombo = animator.GetBool("canDoCombo");
 
         playerManager.isSprinting = inputHandler.b_input;
         inputHandler.TickInput(delta);

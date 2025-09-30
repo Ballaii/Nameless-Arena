@@ -183,7 +183,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else
                 {
-                    animator.PlayTargetAnimation("Movement", false);
+                    animator.PlayTargetAnimation("Empty", false);
                     inAirTimer = 0;
                 }
                 playerManager.isInAir = false;
@@ -212,7 +212,7 @@ public class PlayerMovement : MonoBehaviour
             if (playerManager.isInteracting || inputHandler.moveAmount > 0)
             {
                 myTransform.position = Vector3.Lerp(myTransform.position,
-                                                    targetPosition, Time.deltaTime);
+                                                    targetPosition, Time.deltaTime/0.1f);
             }
             else
             {
