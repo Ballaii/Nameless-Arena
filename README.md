@@ -1,4 +1,4 @@
-# cancelled project; following the development in unity version control, new scope: 2d Meteoidvania game
+# cancelled project; following the development in unity version control, new scope: 2d Metroidvania game
 
 
 # Current progress of the game
