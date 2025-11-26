@@ -1,3 +1,6 @@
+# cancelled project; following the development in unity version control, new scope: 2d Meteoidvania game
+
+
 # Current progress of the game
 
 *video location*
